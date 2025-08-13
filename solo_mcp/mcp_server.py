@@ -24,12 +24,14 @@ from mcp.types import TextContent, Tool, Resource, Prompt
 try:
     from solo_mcp.config import SoloConfig
     from solo_mcp.server import SoloServer
+    from solo_mcp.tools.todo import TodoTool
 except ModuleNotFoundError:
     root_dir = Path(__file__).resolve().parents[1]
     if str(root_dir) not in sys.path:
         sys.path.insert(0, str(root_dir))
     from solo_mcp.config import SoloConfig
     from solo_mcp.server import SoloServer
+    from solo_mcp.tools.todo import TodoTool
 
 
 # 在配置日志前，确保日志目录存在（避免 FileNotFoundError）
@@ -372,6 +374,300 @@ async def credits_add(amount: int) -> str:
         return f"Added {amount} credits. New balance: {new_balance}"
     except Exception as e:
         return f"Error adding credits: {str(e)}"
+
+
+# =============================================================================
+# TODO TOOLS - 任务管理功能
+# =============================================================================
+
+
+def get_todo_tool():
+    """获取 TodoTool 实例"""
+    return TodoTool()
+
+
+@mcp.tool()
+async def todo_create(title: str, description: str = "", priority: str = "medium", 
+                     due_date: Optional[str] = None, tags: Optional[str] = None) -> str:
+    """
+    创建新的待办任务
+
+    Args:
+        title: 任务标题
+        description: 任务描述
+        priority: 任务优先级 (low, medium, high, urgent)
+        due_date: 截止日期 (ISO格式)
+        tags: 标签列表 (逗号分隔)
+
+    Returns:
+        创建结果
+    """
+    try:
+        todo = get_todo_tool()
+        tag_list = [tag.strip() for tag in tags.split(",")] if tags else None
+        task_id = todo.create_task(title, description, priority, due_date, tag_list)
+        return f"Successfully created task '{title}' with ID: {task_id}"
+    except Exception as e:
+        return f"Error creating task: {str(e)}"
+
+
+@mcp.tool()
+async def todo_list(status: Optional[str] = None, priority: Optional[str] = None, 
+                   tag: Optional[str] = None) -> str:
+    """
+    列出待办任务
+
+    Args:
+        status: 按状态过滤 (pending, in_progress, completed, cancelled)
+        priority: 按优先级过滤 (low, medium, high, urgent)
+        tag: 按标签过滤
+
+    Returns:
+        任务列表
+    """
+    try:
+        todo = get_todo_tool()
+        tasks = todo.list_tasks(status, priority, tag)
+        
+        if not tasks:
+            return "No tasks found matching the criteria."
+        
+        task_lines = []
+        for task in tasks:
+            tags_str = ", ".join(task['tags']) if task['tags'] else "None"
+            due_str = task['due_date'] if task['due_date'] else "No due date"
+            task_lines.append(
+                f"• [{task['status']}] {task['title']} (Priority: {task['priority']})\n"
+                f"  ID: {task['id']}\n"
+                f"  Description: {task['description'] or 'No description'}\n"
+                f"  Tags: {tags_str}\n"
+                f"  Due: {due_str}\n"
+                f"  Created: {task['created_at']}\n"
+            )
+        
+        return f"Found {len(tasks)} task(s):\n\n" + "\n".join(task_lines)
+    except Exception as e:
+        return f"Error listing tasks: {str(e)}"
+
+
+@mcp.tool()
+async def todo_get(task_id: str) -> str:
+    """
+    获取特定任务详情
+
+    Args:
+        task_id: 任务ID
+
+    Returns:
+        任务详情
+    """
+    try:
+        todo = get_todo_tool()
+        task = todo.get_task(task_id)
+        
+        if not task:
+            return f"Task with ID '{task_id}' not found."
+        
+        tags_str = ", ".join(task['tags']) if task['tags'] else "None"
+        deps_str = ", ".join(task['dependencies']) if task['dependencies'] else "None"
+        notes_str = "\n  ".join(task['notes']) if task['notes'] else "None"
+        
+        return f"""Task Details:
+ID: {task['id']}
+Title: {task['title']}
+Description: {task['description'] or 'No description'}
+Status: {task['status']}
+Priority: {task['priority']}
+Tags: {tags_str}
+Dependencies: {deps_str}
+Due Date: {task['due_date'] or 'No due date'}
+Created: {task['created_at']}
+Updated: {task['updated_at']}
+
+Notes:
+  {notes_str}"""
+    except Exception as e:
+        return f"Error getting task: {str(e)}"
+
+
+@mcp.tool()
+async def todo_update(task_id: str, title: Optional[str] = None, 
+                     description: Optional[str] = None, status: Optional[str] = None,
+                     priority: Optional[str] = None, due_date: Optional[str] = None,
+                     tags: Optional[str] = None) -> str:
+    """
+    更新任务
+
+    Args:
+        task_id: 任务ID
+        title: 新标题
+        description: 新描述
+        status: 新状态 (pending, in_progress, completed, cancelled)
+        priority: 新优先级 (low, medium, high, urgent)
+        due_date: 新截止日期
+        tags: 新标签列表 (逗号分隔)
+
+    Returns:
+        更新结果
+    """
+    try:
+        todo = get_todo_tool()
+        
+        update_data = {}
+        if title is not None:
+            update_data['title'] = title
+        if description is not None:
+            update_data['description'] = description
+        if status is not None:
+            update_data['status'] = status
+        if priority is not None:
+            update_data['priority'] = priority
+        if due_date is not None:
+            update_data['due_date'] = due_date
+        if tags is not None:
+            update_data['tags'] = [tag.strip() for tag in tags.split(",")] if tags else []
+        
+        if not update_data:
+            return "No fields specified for update."
+        
+        success = todo.update_task(task_id, **update_data)
+        if success:
+            return f"Successfully updated task '{task_id}'."
+        else:
+            return f"Task with ID '{task_id}' not found."
+    except Exception as e:
+        return f"Error updating task: {str(e)}"
+
+
+@mcp.tool()
+async def todo_delete(task_id: str) -> str:
+    """
+    删除任务
+
+    Args:
+        task_id: 任务ID
+
+    Returns:
+        删除结果
+    """
+    try:
+        todo = get_todo_tool()
+        success = todo.delete_task(task_id)
+        if success:
+            return f"Successfully deleted task '{task_id}'."
+        else:
+            return f"Task with ID '{task_id}' not found."
+    except Exception as e:
+        return f"Error deleting task: {str(e)}"
+
+
+@mcp.tool()
+async def todo_search(query: str) -> str:
+    """
+    搜索任务
+
+    Args:
+        query: 搜索关键词
+
+    Returns:
+        搜索结果
+    """
+    try:
+        todo = get_todo_tool()
+        tasks = todo.search_tasks(query)
+        
+        if not tasks:
+            return f"No tasks found matching '{query}'."
+        
+        task_lines = []
+        for task in tasks:
+            task_lines.append(
+                f"• [{task['status']}] {task['title']} (Priority: {task['priority']})\n"
+                f"  ID: {task['id']}\n"
+                f"  Description: {task['description'] or 'No description'}\n"
+            )
+        
+        return f"Found {len(tasks)} task(s) matching '{query}':\n\n" + "\n".join(task_lines)
+    except Exception as e:
+        return f"Error searching tasks: {str(e)}"
+
+
+@mcp.tool()
+async def todo_stats() -> str:
+    """
+    获取任务统计信息
+
+    Returns:
+        统计信息
+    """
+    try:
+        todo = get_todo_tool()
+        stats = todo.get_statistics()
+        
+        status_lines = []
+        for status, count in stats['status_breakdown'].items():
+            status_lines.append(f"  {status}: {count}")
+        
+        priority_lines = []
+        for priority, count in stats['priority_breakdown'].items():
+            priority_lines.append(f"  {priority}: {count}")
+        
+        return f"""Todo Statistics:
+Total Tasks: {stats['total_tasks']}
+
+By Status:
+{chr(10).join(status_lines)}
+
+By Priority:
+{chr(10).join(priority_lines)}"""
+    except Exception as e:
+        return f"Error getting statistics: {str(e)}"
+
+
+@mcp.tool()
+async def todo_add_note(task_id: str, note: str) -> str:
+    """
+    为任务添加备注
+
+    Args:
+        task_id: 任务ID
+        note: 备注内容
+
+    Returns:
+        添加结果
+    """
+    try:
+        todo = get_todo_tool()
+        success = todo.add_note(task_id, note)
+        if success:
+            return f"Successfully added note to task '{task_id}'."
+        else:
+            return f"Task with ID '{task_id}' not found."
+    except Exception as e:
+        return f"Error adding note: {str(e)}"
+
+
+@mcp.tool()
+async def todo_add_dependency(task_id: str, dependency_id: str) -> str:
+    """
+    为任务添加依赖关系
+
+    Args:
+        task_id: 任务ID
+        dependency_id: 依赖任务ID
+
+    Returns:
+        添加结果
+    """
+    try:
+        todo = get_todo_tool()
+        success = todo.add_dependency(task_id, dependency_id)
+        if success:
+            return f"Successfully added dependency '{dependency_id}' to task '{task_id}'."
+        else:
+            return f"Failed to add dependency. Check that both tasks exist."
+    except Exception as e:
+        return f"Error adding dependency: {str(e)}"
 
 
 # =============================================================================

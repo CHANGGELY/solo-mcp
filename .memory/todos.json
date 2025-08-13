@@ -1,0 +1,117 @@
+{
+  "e2f3a9a0-a4b7-4816-8310-9919a8db5158": {
+    "id": "e2f3a9a0-a4b7-4816-8310-9919a8db5158",
+    "title": "测试任务",
+    "description": "这是一个测试任务",
+    "status": "pending",
+    "priority": "high",
+    "created_at": "2025-08-14T03:43:12.316296",
+    "updated_at": "2025-08-14T03:43:12.316296",
+    "due_date": null,
+    "tags": [],
+    "dependencies": [],
+    "notes": []
+  },
+  "0fd000e6-8bfb-4c32-b68f-0262d5ce4b81": {
+    "id": "0fd000e6-8bfb-4c32-b68f-0262d5ce4b81",
+    "title": "完成项目文档",
+    "description": "编写项目的 README 和 API 文档",
+    "status": "pending",
+    "priority": "high",
+    "created_at": "2025-08-14T03:44:00.752558",
+    "updated_at": "2025-08-14T03:44:00.752558",
+    "due_date": null,
+    "tags": [
+      "文档",
+      "重要"
+    ],
+    "dependencies": [],
+    "notes": []
+  },
+  "03cb0340-2908-4e00-a6de-aad84657b366": {
+    "id": "03cb0340-2908-4e00-a6de-aad84657b366",
+    "title": "代码重构",
+    "description": "重构核心模块代码",
+    "status": "pending",
+    "priority": "medium",
+    "created_at": "2025-08-14T03:44:00.753115",
+    "updated_at": "2025-08-14T03:44:00.753115",
+    "due_date": null,
+    "tags": [
+      "代码",
+      "重构"
+    ],
+    "dependencies": [],
+    "notes": []
+  },
+  "25b70865-c155-4090-bcc9-d6ce8af48853": {
+    "id": "25b70865-c155-4090-bcc9-d6ce8af48853",
+    "title": "完成项目文档",
+    "description": "编写项目的 README 和 API 文档",
+    "status": "in_progress",
+    "priority": "high",
+    "created_at": "2025-08-14T03:44:36.018288",
+    "updated_at": "2025-08-14T03:44:36.021194",
+    "due_date": null,
+    "tags": [
+      "文档",
+      "重要"
+    ],
+    "dependencies": [],
+    "notes": []
+  },
+  "fc5fadc9-f6ca-4474-a318-563523a164e9": {
+    "id": "fc5fadc9-f6ca-4474-a318-563523a164e9",
+    "title": "代码重构",
+    "description": "重构核心模块代码",
+    "status": "pending",
+    "priority": "medium",
+    "created_at": "2025-08-14T03:44:36.019796",
+    "updated_at": "2025-08-14T03:44:36.022200",
+    "due_date": null,
+    "tags": [
+      "代码",
+      "重构"
+    ],
+    "dependencies": [
+      "25b70865-c155-4090-bcc9-d6ce8af48853"
+    ],
+    "notes": []
+  },
+  "46601a8a-15ee-488c-bedf-d5ed7abf4341": {
+    "id": "46601a8a-15ee-488c-bedf-d5ed7abf4341",
+    "title": "完成项目文档",
+    "description": "编写项目的 README 和 API 文档",
+    "status": "in_progress",
+    "priority": "high",
+    "created_at": "2025-08-14T03:44:48.896173",
+    "updated_at": "2025-08-14T03:44:48.900799",
+    "due_date": null,
+    "tags": [
+      "文档",
+      "重要"
+    ],
+    "dependencies": [],
+    "notes": [
+      "[2025-08-14T03:44:48.900799] 已开始编写 README 文件"
+    ]
+  },
+  "2b9e480b-e98f-4e5c-a086-99fb8d36eac5": {
+    "id": "2b9e480b-e98f-4e5c-a086-99fb8d36eac5",
+    "title": "代码重构",
+    "description": "重构核心模块代码",
+    "status": "pending",
+    "priority": "medium",
+    "created_at": "2025-08-14T03:44:48.896787",
+    "updated_at": "2025-08-14T03:44:48.899079",
+    "due_date": null,
+    "tags": [
+      "代码",
+      "重构"
+    ],
+    "dependencies": [
+      "46601a8a-15ee-488c-bedf-d5ed7abf4341"
+    ],
+    "notes": []
+  }
+}
