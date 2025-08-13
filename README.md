@@ -2,6 +2,7 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![PyPI Version](https://img.shields.io/pypi/v/solo-mcp.svg)](https://pypi.org/project/solo-mcp/)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](tests/)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -45,9 +46,24 @@
 
 ### 安装
 
+#### 方法一：从 PyPI 安装（推荐）
+
+```bash
+# 安装 Solo MCP
+pip install solo-mcp
+
+# 验证安装
+solo-mcp --version
+
+# 启动 MCP 服务器
+solo-mcp-server
+```
+
+#### 方法二：从源码安装
+
 ```bash
 # 克隆项目
-git clone https://github.com/your-username/solo-mcp.git
+git clone https://github.com/CHANGGELY/solo-mcp.git
 cd solo-mcp
 
 # 创建虚拟环境 (推荐使用 Python 3.11)
@@ -74,11 +90,17 @@ python -m pytest tests/test_basic.py
 ### 基本使用
 
 ```bash
-# 启动 Solo MCP 服务
-python -m solo_mcp
+# 查看版本信息
+solo-mcp --version
 
-# 或者直接运行主模块
-python solo_mcp/main.py
+# 启动 Solo MCP 服务器
+solo-mcp-server
+
+# 启动带配置的服务器
+solo-mcp --server --config custom_config.toml
+
+# 或者从源码运行
+python -m solo_mcp
 
 # 运行交互式示例
 python examples/demo.py
@@ -410,7 +432,7 @@ black --check solo_mcp/ tests/
 
 如果您发现任何问题或有改进建议，请:
 
-1. 查看 [Issues](https://github.com/your-username/solo-mcp/issues) 是否已有相关问题
+1. 查看 [Issues](https://github.com/CHANGGELY/solo-mcp/issues) 是否已有相关问题
 2. 如果没有，请创建新的 Issue 并提供详细信息:
    - 问题描述
    - 复现步骤
