@@ -4,12 +4,13 @@
 
 | Name | Description | Notes |
 | :--- | :---------- | :---- |
-| [CHANGELY/solo-mcp](https://github.com/CHANGELY/solo-mcp) | An intelligent MCP server with adaptive learning and vector search. It provides smart orchestration, context awareness, semantic search, and knowledge accumulation. | Community implementation, Python 🐍, Local 🏠, Production-grade ⚡ |
+| [CHANGELY/solo-mcp](https://github.com/CHANGELY/solo-mcp) | Trae Solo Mode Enhancement - An intelligent MCP server with adaptive learning, vector search, and task management. It provides smart orchestration, context awareness, semantic search, knowledge accumulation, and Todo management. | Community implementation, Python 🐍, Local 🏠, Production-grade ⚡ |
 
 Key Features:
 - 🧠 Smart Orchestration: Automatically selects optimal tool combinations for efficient task execution
 - 📚 Adaptive Learning: Learns from usage patterns to continuously improve recommendations
 - 🔍 Vector Search: Semantic similarity search for highly relevant results
+- 📝 Todo Management: Complete task management system with priority, status, and dependency tracking
 - ⚡ High Performance: Optimized filesystem operations and memory management
 - 🔧 Production-grade: Comprehensive test coverage and stability
 
@@ -18,6 +19,7 @@ Tools:
 - Memory: semantic search, knowledge storage and retrieval
 - Adaptive Learning: user preference learning and tool recommendation
 - Context Awareness: decision making based on history and environment
+- Todo Management: task creation, updates, deletion, search, and analytics
 
 Installation:
 ```bash
@@ -44,4 +46,5 @@ Use Cases:
 - Complex tasks requiring intelligent orchestration
 - Knowledge management with semantic search
 - Systems that benefit from adaptive learning
+- Project management and collaborative task tracking
 - Production environments demanding stability and performance
