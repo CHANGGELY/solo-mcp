@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solo-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "智能代理协作平台 - 基于 MCP 协议的多角色任务编排系统"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -30,14 +30,14 @@ classifiers = [
 dynamic = ["dependencies"]
 
 [project.urls]
-"Homepage" = "https://github.com/your-username/solo-mcp"
-"Bug Reports" = "https://github.com/your-username/solo-mcp/issues"
-"Source" = "https://github.com/your-username/solo-mcp"
+"Homepage" = "https://github.com/CHANGGELY/solo-mcp"
+"Bug Reports" = "https://github.com/CHANGGELY/solo-mcp/issues"
+"Source" = "https://github.com/CHANGGELY/solo-mcp"
 "Documentation" = "https://solo-mcp.readthedocs.io/"
 
 [project.scripts]
-solo-mcp = "solo_mcp.main:main"
-solo-mcp-server = "solo_mcp.server:main"
+solo-mcp = "solo_mcp:main"
+solo-mcp-server = "solo_mcp.mcp_server:run_server"
 
 [project.optional-dependencies]
 dev = [
