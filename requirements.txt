@@ -1,0 +1,21 @@
+# Solo MCP - Dependencies (Python 3.11.9)
+
+# MCP core
+mcp[cli]>=1.4.0
+
+# Optional vectors (enable via config.enable_vector_search)
+sentence-transformers>=2.7.0
+
+# HTTP utils for potential downloads/caching
+requests>=2.31.0
+
+# Dev & Tests
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+
+# 交互式反馈增强 MCP
+mcp-feedback-enhanced>=0.0.1
+
+# Note: Avoid numpy/rank-bm25 to prevent native crash on some Windows setups
+# Implemented a pure-Python BM25 in tools.index for Phase 1

@@ -1,0 +1,30 @@
+# Include the README and other documentation files
+include README.md
+include LICENSE
+include CONTRIBUTING.md
+include MANIFEST.in
+include requirements.txt
+include pyproject.toml
+include setup.py
+
+# Include configuration files
+recursive-include solo_mcp/config *.json
+recursive-include solo_mcp/templates *.json
+
+# Include examples
+recursive-include examples *.py
+recursive-include examples *.md
+
+# Include tests
+recursive-include tests *.py
+
+# Exclude unnecessary files
+exclude .gitignore
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.so
+recursive-exclude * .DS_Store
+recursive-exclude .trae *
+recursive-exclude memory *
+recursive-exclude venv* *
+recursive-exclude .pytest_cache *
