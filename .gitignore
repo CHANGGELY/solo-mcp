@@ -190,3 +190,4 @@ Thumbs.db
 # MCP specific
 .mcp/
 mcp_logs/
+.vercel/
