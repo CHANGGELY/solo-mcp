@@ -1,0 +1,13 @@
+# Solo MCP - Core Dependencies (Python 3.11+)
+
+# MCP core
+mcp[cli]>=1.4.0
+
+# HTTP utils for potential downloads/caching
+requests>=2.31.0
+
+# 交互式反馈增强 MCP
+mcp-feedback-enhanced>=0.0.1
+
+# Note: Heavy ML dependencies moved to optional-dependencies in pyproject.toml
+# This avoids CI failures on platforms with limited resources
