@@ -411,6 +411,27 @@ async def get_project_structure() -> str:
     except Exception as e:
         return f"Error getting project structure: {str(e)}"
 
+@mcp.resource("project://context_stats")
+async def get_context_stats() -> str:
+    try:
+        server = get_solo_server()
+        stats = server.context.get_collection_stats()
+        lines = []
+        lines.append("Context Stats:")
+        lines.append(f"  Total Queries: {stats.get('total_queries', 0)}")
+        lines.append(f"  Success Rate: {stats.get('success_rate', 0.0):.2f}")
+        lines.append(f"  Avg Response: {stats.get('avg_response_time', 0.0):.2f}s")
+        lines.append(f"  Cache Hit Rate: {stats.get('cache_hit_rate', 0.0):.2f}")
+        trim = stats.get('trimmer_stats', {})
+        if trim:
+            lines.append("  Trimmer:")
+            lines.append(f"    Total Trims: {trim.get('total_trims', 0)}")
+            lines.append(f"    Avg Trim Ratio: {trim.get('avg_trim_ratio', 0.0):.2f}")
+            lines.append(f"    Preserved Rate: {trim.get('content_preserved_rate', 0.0):.2f}")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error getting context stats: {str(e)}"
+
 
 # =============================================================================
 # PROMPTS - 预定义提示模板
@@ -502,3 +523,54 @@ def run_server():
 
 if __name__ == "__main__":
     run_server()
+@mcp.resource("project://statistics")
+async def get_project_statistics() -> str:
+    """获取最近调用统计"""
+    try:
+        server = get_solo_server()
+        stats = server.get_statistics()
+        lines = []
+        lines.append("Statistics:")
+        lines.append(f"  Total: {stats.get('total', 0)}")
+        lines.append(f"  Success: {stats.get('success', 0)}")
+        lines.append(f"  Failed: {stats.get('failed', 0)}")
+        lines.append(f"  Success Rate: {stats.get('success_rate', 0.0):.2f}%")
+        lines.append(f"  Avg Latency: {stats.get('avg_latency_ms', 0.0):.2f} ms")
+        lines.append(f"  P95 Latency: {stats.get('p95_latency_ms', 0.0):.2f} ms")
+        lines.append("  By Tool:")
+        by_tool = stats.get("by_tool", {})
+        for k, v in by_tool.items():
+            lines.append(f"    {k}: {v}")
+        lines.append("  Recent:")
+        for e in stats.get("recent", []):
+            lines.append(
+                f"    {e.get('tool')} | ok={e.get('ok')} | latency={e.get('latency_ms')} ms | size={e.get('result_size')} | error={e.get('error')}"
+            )
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error getting statistics: {str(e)}"
+
+@mcp.resource("project://orchestrator_stats")
+async def get_orchestrator_stats() -> str:
+    try:
+        server = get_solo_server()
+        status = server.orchestrator.get_optimization_status()
+        lines = []
+        lines.append("Orchestrator Stats:")
+        exec_stats = status.get("execution_stats", {})
+        lines.append(f"  Total Rounds: {exec_stats.get('total_rounds', 0)}")
+        lines.append(f"  Successful Rounds: {exec_stats.get('successful_rounds', 0)}")
+        lines.append(f"  Avg Response: {exec_stats.get('avg_response_time', 0.0):.2f}s")
+        if "learning_stats" in status:
+            lines.append("  Learning:")
+            ls = status["learning_stats"]
+            lines.append(f"    Total Actions: {ls.get('total_actions', 0)}")
+            lines.append(f"    Success Rate: {ls.get('success_rate', 0.0):.2f}")
+        if "optimization_status" in status:
+            lines.append("  Optimization:")
+            os = status["optimization_status"]
+            lines.append(f"    Strategy: {os.get('current_strategy', '')}")
+            lines.append(f"    Recent Opt: {os.get('recent_optimizations', 0)}")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error getting orchestrator stats: {str(e)}"

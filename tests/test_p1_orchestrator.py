@@ -5,6 +5,7 @@
 """
 
 import asyncio
+import pytest
 import sys
 import os
 from pathlib import Path
@@ -18,7 +19,8 @@ from solo_mcp.tools.memory import MemoryTool
 from solo_mcp.tools.orchestrator import OrchestratorTool
 
 
-async def test_orchestrator_p1():
+@pytest.mark.asyncio
+aSYNC def test_orchestrator_p1():
     """测试 P1 阶段的编排器功能"""
     print("=== 测试 P1 阶段：多角色任务分配与冲突检测 ===")
     
@@ -26,7 +28,7 @@ async def test_orchestrator_p1():
     config = SoloConfig.load(Path.cwd())
     roles_tool = RolesTool(config)
     memory_tool = MemoryTool(config)
-    orchestrator = OrchestratorTool(config, roles_tool, memory_tool)
+    orchestrator = OrchestratorTool(config)
     
     # 测试场景1：Web 前端项目
     print("\n--- 测试场景1：Web 前端项目 ---")
@@ -50,13 +52,13 @@ async def test_orchestrator_p1():
             tasks = action.get('tasks', [])
             print(f"  {role}: {len(tasks)} 个任务")
             for task in tasks:
-                print(f"    - {task['name']} (优先级: {task['priority']}, 预估: {task['estimated_time']}分钟)")
+                print(f"    - {task['name']} (优先级: {task['priority']}, 预估: {task['estimated_duration']}分钟)")
     
     if result1.get('conflicts'):
         print("\n⚠️ 检测到的冲突:")
         for conflict in result1['conflicts']:
             print(f"  类型: {conflict['type']}, 严重性: {conflict['severity']}")
-            print(f"  原因: {conflict['reason']}")
+            print(f"  原因: {conflict.get('description','')}")
             print(f"  解决方案: {conflict['resolution']}")
     
     # 测试场景2：全栈 API 项目
@@ -113,6 +115,10 @@ async def test_orchestrator_p1():
     print(f"✅ 角色能力匹配: {'通过' if has_role_matching else '失败'}")
     
     print("\n🎉 P1 阶段测试完成！")
+    assert 'actions' in result1
+    assert isinstance(result1.get('actions', []), list)
+    assert 'execution_plan' in result1
+    assert isinstance(result1.get('execution_plan', {}), dict)
     return True
 
 
